@@ -4,20 +4,24 @@ library(io)
 library(readr)
 
 #---- read files ---------------------------------------------------------------
-matrix <- read.csv("matrix.csv", row.names = 1)
-group <- read.csv("group.csv")
+input_matrix <- read.csv("matrix.csv", row.names = 1)
+input_group <- read.csv("group.csv")
 
 #---- set up parameters --------------------------------------------------------
 filename <- 'test' # set up file name
-input_matrix <- matrix
-input_group <- group
+width <- 6
+
+#---- pca function--------------------------------------------------------------
+pca <- function(input_matrix,input_group,width,filename){
+  pc <- mmalign::pca(input_matrix)
+  qdraw(
+    mmalign::pca_plot(pc, input_group, aes(colour=group)) +
+      coord_fixed()
+    ,
+    width = width,
+    file = insert(filename, tag=c("pca12"), ext="pdf")
+  )
+}
 
 #---- pca ----------------------------------------------------------------------
-pc <- mmalign::pca(input_matrix)
-qdraw(
-  mmalign::pca_plot(pc, input_group, aes(colour=group)) +
-    coord_fixed()
-  ,
-  width = 6,
-  file = insert('test', tag=c("pca12"), ext="pdf")
-)
+pca(input_matrix,input_group,width,filename)
